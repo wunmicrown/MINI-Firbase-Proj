@@ -3,13 +3,13 @@ import { getAuth, GoogleAuthProvider, signInWithPopup, GithubAuthProvider, creat
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-    apiKey: "AIzaSyCBqBmUu50PVhfgTItFCYKcFxMYXm81IeM",
-    authDomain: "proccesproj.firebaseapp.com",
-    projectId: "proccesproj",
-    storageBucket: "proccesproj.appspot.com",
-    messagingSenderId: "797162819436",
-    appId: "1:797162819436:web:827530f2defe98c7242d49"
-  };
+    apiKey: "AIzaSyBMqc7bv0ZOHam60zdaoZXMtHfNWXBwCRo",
+    authDomain: "full-project-81848.firebaseapp.com",
+    projectId: "full-project-81848",
+    storageBucket: "full-project-81848.appspot.com",
+    messagingSenderId: "950678778632",
+    appId: "1:950678778632:web:ed95cea3d3f8eacc1132bd"
+};
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
