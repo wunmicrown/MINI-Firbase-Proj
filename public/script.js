@@ -6,8 +6,7 @@ import {
     GithubAuthProvider,
     TwitterAuthProvider,
     createUserWithEmailAndPassword,
-    signInWithEmailAndPassword,
-    signOut
+    signInWithEmailAndPassword
 } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-auth.js";
 
 // Your web app's Firebase configuration
@@ -51,34 +50,31 @@ window.gLogin = gLogin;
 
 //   Github Login
 const gitLogin = () => {
-    alert("Github Login");
     signInWithPopup(auth, githubProvider)
         .then((result) => {
-            // The signed-in user info.
-            const user = result.user;
+            let user = result.user
             console.log(user);
             if (user) {
-                window.location.href = "dashboard.html";
+                window.location.href = "dashboard.html"
             } else {
-                window.location.href = "index.html";
+                window.location.href = "index.html"
             }
         })
-        .catch((error) => {
-            // Handle Errors here.
-            const errorCode = error.code;
-            const errorMessage = error.message;
-            console.log(errorCode, errorMessage);
-        });
-    if (errorCode == "auth/account-exists-with-different-credential") {
-        emptyError.style.display = "block"
-        emptyError.textContent = "An account already exist with this email address";
-        emptyError.style.color = "orange"
-        setTimeout(() => {
-            emptyError.style.display = "none"
-        }, 3000)
-    }
-};
-window.gitLogin = gitLogin;
+        .catch((err) => {
+            let errorCode = err.code
+            let errorMsg = err.message
+            console.log(errorCode, errorMsg);
+            if (errorCode == "auth/account-exists-with-different-credential") {
+                emptyError.style.display = "block"
+                emptyError.textContent = "An account already exist with this email address";
+                emptyError.style.color = "orange"
+                setTimeout(() => {
+                    emptyError.style.display = "none"
+                }, 3000)
+            }
+        })
+}
+window.gitLogin = gitLogin
 
 // Twitter Sign In//
 const twitLog = () => {
@@ -193,14 +189,3 @@ const signIn = () => {
     }
 }
 window.signIn = signIn
-const signUserOut = () => {
-    signOut(auth)
-        .then(() => {
-            console.log('user successfully signed out');
-        })
-        .catch((err) => {
-            console.log(err + "User signed out");
-        })
-}
-
-window.signUserOut = signUserOut
