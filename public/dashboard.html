@@ -4,11 +4,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard</title>
+    <title>Movie App</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
-    <link rel="shortcut icon" href="icons8-movie-96.png" type="image/x-icon">
+    <link rel="Movie icon" href="movie icon.webp" type="image/x-icon">
 </head>
 
 <body class="body">
@@ -43,9 +43,11 @@
             </div>
         </div>
     </nav>
-    
+
     <div id="show"></div>
-    <div class="fs-5 mt-5"><p id="emptyError" class="text-center"></p></div>
+    <div class="fs-5 mt-5">
+        <p id="emptyError" class="text-center"></p>
+    </div>
     <section class="input-container-section">
         <div id="saved" class="text-center"></div>
         <div class=" flex-container">
@@ -226,11 +228,14 @@
             }
             data.map((eachItem) => {
                 displayMsg.innerHTML += `
-                <p>${eachItem.date}</p>
-                <p>${eachItem.desc}</p>
-                <p>${eachItem.todo}</p>
-                <p>${eachItem.userName}</p>
-                <p>${eachItem.yearOfRelease}</p>
+                <div class="card" style="width: 18rem;">
+                <div class="card-body">
+                    <p class="card-text"><span style="color: navy; font-size: 18px; font-weight: 600;filter: drop-shadow(0 0 0.35rem black);">Movie Title :</span> ${eachItem.todo}</p>
+                    <p class="card-text"><span style="color: navy; font-size: 18px; font-weight: 600;filter: drop-shadow(0 0 0.35rem black);">Movie Genere :</span> ${eachItem.desc}</p>
+                    <p class="card-text"><span style="color: navy; font-size: 18px; font-weight: 600;filter: drop-shadow(0 0 0.35rem black);">Year Of Release :</span> ${eachItem.yearOfRelease}</p>
+                <p class="card-text"><span style="color: navy; font-size: 18px; font-weight: 600;filter: drop-shadow(0 0 0.35rem black);">Movie Date :</span> ${eachItem.date}</p>
+                </div>
+            </div>
                 `
             })
         })
