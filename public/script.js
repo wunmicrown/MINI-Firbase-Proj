@@ -28,7 +28,6 @@ const twitterProvider = new TwitterAuthProvider();
 
 //   Google Sign In
 const gLogin = () => {
-    alert("Google Sign In");
     signInWithPopup(auth, provider)
         .then((result) => {
             const user = result.user;
@@ -78,7 +77,6 @@ window.gitLogin = gitLogin
 
 // Twitter Sign In//
 const twitLog = () => {
-    alert("Twitter Login")
     signInWithPopup(auth, twitterProvider)
         .then((result) => {
             const credential = TwitterAuthProvider.credentialFromResult(result);
@@ -104,7 +102,6 @@ const twitLog = () => {
 window.twitLog = twitLog
 // Sign Up page //
 const signUp = () => {
-    alert("working")
     let email = document.getElementById('email').value
     let password = document.getElementById('password').value
     let fname = document.getElementById('firstname').value
@@ -115,7 +112,11 @@ const signUp = () => {
             .then((userCredential) => {
                 const user = userCredential.user
                 console.log(user);
-                if (email == user.email) {
+                if (email == user.email){
+                    emptyError.textContent = " Sign Up Successful!";
+                    emptyError.style.color = "lime"
+                    setTimeout(() => {
+                    }, 3000);
                     window.location.href = "index.html"
                 }
             })
@@ -147,7 +148,6 @@ const signUp = () => {
 window.signUp = signUp
 // Sign In Page
 const signIn = () => {
-    alert("Sign Up");
     let email = document.getElementById('email').value
     let password = document.getElementById('password').value
     console.log(email);
@@ -158,25 +158,42 @@ const signIn = () => {
                 // Signed in 
                 const user = userCredential.user;
                 console.log(user);
-
                 if (user !== "auth/invalid-login-credentials") {
-
-                    window.location.href = "dashboard.html"
+                    emptyError.textContent = "Successfully logged in!";
+                    emptyError.style.color = "lime";
+                    setTimeout(() => {
+                        emptyError.style.display = "none"
+                    }, 3000);
+                
+                    window.location.href = "dashboard.html";
                 } else {
-                    window.location.href = "index.html"
+                    window.location.href = "index.html";
+                    emptyError.textContent = "invalid-login-credentials";
+                    emptyError.style.color = "red";
+                    setTimeout(() => {
+                        emptyError.style.display = "none"
+                    }, 3000);
                 }
             })
             .catch((error) => {
                 const errorCode = error.code;
                 const errorMessage = error.message;
                 console.log(errorCode, errorMessage);
-                if (errorCode == "auth/invalid-email") {
+                if(errorCode =="auth/invalid-login-credentials") {
+                    emptyError.textContent = "invalid-login-credentials";
+                    emptyError.style.color = "red";
+                    setTimeout(() => {
+                        emptyError.style.display = "none"
+                    }, 3000)
+                }
+                if (errorCode  == "auth/invalid-email") {
                     emptyError.textContent = "Incorrect email or password";
                     emptyError.style.color = "orange";
                     setTimeout(() => {
                         emptyError.style.display = "none"
                     }, 3000)
                 }
+                
                 document.getElementById('email').value = ""
                 document.getElementById('password').value = ""
             });

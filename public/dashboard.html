@@ -49,7 +49,9 @@
 
 
     <div id="show"></div>
+    <div class="fs-5 mt-5"><p id="emptyError" class="text-center"></p></div>
     <section class="input-container-section ">
+        <div id="saved" class="text-center"></div>
         <div class=" flex-container">
             <div class="inputBox_container">
                 <svg class="search_icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" alt="search icon">
@@ -81,17 +83,19 @@
                         d="M46.599 46.599a4.498 4.498 0 0 1-6.363 0l-7.941-7.941C29.028 40.749 25.167 42 21 42 9.402 42 0 32.598 0 21S9.402 0 21 0s21 9.402 21 21c0 4.167-1.251 8.028-3.342 11.295l7.941 7.941a4.498 4.498 0 0 1 0 6.363zM21 6C12.717 6 6 12.714 6 21s6.717 15 15 15c8.286 0 15-6.714 15-15S29.286 6 21 6z">
                     </path>
                 </svg>
-                <input class="inputBox" type="file" placeholder="Choose file" id="file">
+                <input class="inputBox" type="file" placeholder="Choose file" id="myFile">
             </div>
             <button class="button" onclick="uploadMedia()"> Upload</button>
+            <p class="text-center my-2" id="prog"></p>
             <div style="color: white;" id="displayMsg"></div>
         </div>
     </section>
     <!-- <script type="module" src="script.js"></script> -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-app.js";
-        import { getAuth, onAuthStateChanged, signOut} from "https://www.gstatic.com/firebasejs/10.6.0/firebase-auth.js";
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-auth.js";
         import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-database.js";
+        import { getStorage, ref as stref, uploadBytesResumable } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-storage.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyCBqBmUu50PVhfgTItFCYKcFxMYXm81IeM",
@@ -106,7 +110,8 @@
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const database = getDatabase(app);
-        let todoIndex= 0;
+        const storage = getStorage(app);
+        let todoIndex = 0;
 
         onAuthStateChanged(auth, (user) => {
             if (user) {
@@ -146,25 +151,66 @@
                     let todoObj = {
                         todo: todo.value,
                         desc: todoDesc.value,
+                        file: myFile.files[0].name,
                         yearOfRelease: yOfRelease.value,
                         userName,
                         date,
                         time
                     }
+                    let filename = myFile.files[0].name
+                    let uploadedFile = myFile.files[0]
                     console.log(todoObj);
                     let dbRef = ref(database, `allTodos/${todoIndex}`)
                     let done = set(dbRef, todoObj)
-                    if (done) {
-                        alert("saved")
+
+                    const storageRef = stref(storage, `fullapp/${todoObj.userName}/${filename}`);
+                    let doneStorage = uploadBytesResumable(storageRef, uploadedFile);
+                    doneStorage.on('state_changed', (snapshot) => {
+                        let progress = snapshot.bytesTransferred
+                        let total = snapshot.totalBytes
+                        const showProgress = ((progress / total) * 100).toFixed(2)
+                        console.log(showProgress);
+                        if (showProgress < 100) {
+                            prog.innerHTML = `
+                                <div class="alert alert-danger p-2">${showProgress}%</div>
+                            `
+                        } else if (showProgress == 100) {
+                            prog.innerHTML = `
+                                <div class="alert alert-success p-2">${showProgress}%</div>
+                            `
+                            setTimeout(() => {
+                                prog.style.display = "none"
+                            }, 3000)
+                        }
+                    })
+                    if (done && doneStorage) {
+                        saved.innerHTML = `
+                            <div class="alert alert-success p-2">Successful!</div>
+                        `
+                        setTimeout(() => {
+                            saved.style.display = "none"
+                        }, 3000)
                     } else {
-                        alert("failed to save")
+                        saved.innerHTML = `
+                            <div class="alert alert-danger p-2">Failed to save!</div>
+                        `
+                        setTimeout(() => {
+                            saved.style.display = "none"
+                        }, 3000)
                     }
+
                 } else {
-                    alert("Guy, guy, why now, why you dey fall my hand")
+                    emptyError.textContent = "Please fill in the empty spaces provided";
+                    emptyError.style.color = "red"
+                    setTimeout(() => {
+                        emptyError.style.display = "none"
+                    }, 3000)
                 }
-                todo.value = ""
-                todoDesc.value = ""
-                yOfRelease.value = ""
+                todo.value = "";
+                todoDesc.value = "";
+                yOfRelease.value = "";
+                myFile.value = ""
+
             })
 
         }
@@ -172,15 +218,15 @@
 
         let dbRef = ref(database, "allTodos")
         onValue(dbRef, (snapshot) => {
-            displayMsg.innerHTML=""
+            displayMsg.innerHTML = ""
             const data = snapshot.val();
             console.log(data);
             if (data) {
-                
-                todoIndex=data.length
+
+                todoIndex = data.length
             } else {
-                todoIndex=0
-                
+                todoIndex = 0
+
             }
             data.map((eachItem) => {
                 displayMsg.innerHTML += `
